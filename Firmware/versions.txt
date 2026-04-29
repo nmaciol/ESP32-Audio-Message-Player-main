@@ -1,0 +1,8 @@
+2.0 Add Live Stream  code optimization
+2.3 Add  MQTT command to set sleep mode and deep sleep time, and publish sleep mode and WiFi RSSI in ping response
+2.4 Add RTC time to ping response and mDNS
+2.5 Add MQTT command to get last action 
+2.6 Add MQTT connect watchdog and reboot after 20 MQTT connection failures
+3.0 Replace SD Lib with SD_MMC, IniFile Lib with ArduinoJson, code optimization, bug fixes, and more MQTT commands
+3.1 Remove credentials.h and add error handling for missing or wrong entries in app.json
+3.2 Add Audio error mesages via TTS Comodore C64 voice for Config file not exist, json error, network connection error

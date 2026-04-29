@@ -1,0 +1,30 @@
+
+{
+	"main": {
+				"host-name" : "garten-nw",
+				"audio-volume" : "0.4",
+				"start-sound" : "/Doorbell.mp3"
+		},
+	"wifi": {
+				"ssid" : "****",
+				"password" : "****"
+			}, 
+
+	"mqtt" : {
+				"server" : "192.168.*.*",
+				"port" : "1883",
+				"user" : "root",
+				"password" : "***",
+				"house" : "garten"
+			}, 
+	"ftp" : {
+				"user" : "root",
+				"password" : "****"
+			}, 
+	"tts" : {
+				"qry-google" : "http://translate.google.com/translate_tts?ie=UTF-8&tl=%1&client=tw-ob&ttsspeed=%2&q=%3",
+				"lang" : "de-DE",
+				"speed" : "0.7",
+				"max-len-ttm" : "50"
+			}
+}

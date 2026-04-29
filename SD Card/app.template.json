@@ -1,0 +1,36 @@
+{
+    "main": {
+        "host-name": "gong-b",
+        "audio-volume": "0.35",
+        "start-sound": "/Doorbell.mp3"
+    },
+    "wifi": {
+        "ssid": "????",
+        "password": "????"
+    },
+    "mqtt": {
+        "server": "192.168.1.171",
+        "port": "1883",
+        "user": "????",
+        "password": "????",
+        "house": "gong"
+    },
+    "ftp": {
+        "user": "????",
+        "password": "????"
+    },
+    "tts": {
+        "qry-google": "http://translate.google.com/translate_tts?ie=UTF-8&tl=%1&client=tw-ob&ttsspeed=%2&q=%3",
+        "lang": "de-DE",
+        "speed": "0.7",
+        "max-len-ttm": "50"
+    },
+    "WebUI": {
+        "test": {
+            "mp3a": "/Doorbell.mp3",
+            "mp3b": "/sounds/hund-bellt-7-mal.mp3",
+            "tts": "I'm alive",
+            "radio": "http://frontend.streamonkey.net/energy-stuttgart/stream/mp3"
+        }
+    }
+}
