@@ -1,0 +1,88 @@
+{
+    "main": {
+        "host-name": "gong-b",
+        "audio-volume": "0.35",
+        "start-sound": "/Doorbell.mp3",
+         "lowPowerMode": true,
+        "_comment1": "If true, the device will enter low power mode after playing the sound, which can help save battery life if the device is not frequently used. However, it may also increase the time it takes for the device to respond to the next trigger."
+    },
+    "wifi": {
+        "ssid": "????",
+        "password": "????"
+    },
+    "mqtt": {
+        "enable": true,
+        "server": "192.168.1.???",
+        "port": "1883",
+        "user": "root",
+        "password": "????",
+        "house": "gong"
+    },
+    "ftp": {
+        "enable": true,
+        "user": "root",
+        "password": "????"
+    },
+    "tts": {
+        "qry-google": "http://translate.google.com/translate_tts?ie=UTF-8&tl=%1&client=tw-ob&ttsspeed=%2&q=%3",
+        "lang": "de-DE",
+        "speed": "0.7",
+        "max-len-ttm": "50"
+    },
+    "WebUI": {
+        "enable": true,
+        "test": {
+            "mp3a": "/Doorbell.mp3",
+            "mp3b": "/Doorbell.mp3",
+            "tts": "I'm alive",
+            "radio": "http://frontend.streamonkey.net/energy-stuttgart/stream/mp3"
+        }
+    },
+    "ActionKeys": {
+        "enable": true,
+        "Key4": {
+            "interval": 4,     
+            "stop2Press": true,
+            "_comment2": "Interval in seconds to prevent multiple triggers within a short time frame",                         
+            "_comment3": "If true, the device will stop playing the current sound when the button is pressed again",
+            "_comment4": "If the player works as an eDog with a PIR sensor, stop2Press should be disabled. ",
+            "soundPool": "garten",
+            "soundPools": {
+                "Test": [
+                    "mp3/Doorbell.mp3"
+                ],
+                "Tiere": [
+                    "mp3/sounds/fox.mp3",
+                    "mp3/sounds/froesche.mp3",
+                    "mp3/sounds/Gans.mp3",
+                    "mp3/sounds/Hund.mp3",
+                    "mp3/sounds/hund-de.mp3",
+                    "mp3/sounds/hund-small.mp3",
+                    "mp3/sounds/katze.mp3",
+                    "mp3/sounds/wachhund.mp3",
+                    "mp3/sounds/wolf.mp3",
+                    "mp3/sounds/elefant.mp3",
+                    "mp3/sounds/hahn.mp3",
+                    "mp3/sounds/horse-galloping.mp3",
+                    "mp3/sounds/horse-whinny-sound-effect.mp3",
+                    "mp3/sounds/kuh.mp3",
+                    "mp3/sounds/schwein.mp3"
+                ],
+                "Maerchen": [
+                    "mp3/mp3/Brei.mp3",
+                    "mp3/mp3/Die_drei_Steine.mp3",
+                    "mp3/mp3/Froschkoenig.mp3",
+                    "mp3/mp3/Holle.mp3"
+                ],
+                "Geburtstag": [
+                    "ttmen!Happy birthday",
+                    "ttm50!Alles Gute zum Geburtstag",
+                    "ttmpl!Wszystkiego najlepszego z okazji urodzin"
+                ]
+			},
+            "_comment1": "Possible commands:: mp3/Doorbell.mp3 ; mp380!/Doorbell.mp3; ttsI'm a doog",
+            "_comment5": "Audio source: https://www.ohrka.de/ueber-ohrka/100-neue-ohrka-maerchen and https://pixabay.com/"
+		}
+    }
+
+}
