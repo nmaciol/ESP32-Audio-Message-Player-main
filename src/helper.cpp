@@ -1,8 +1,6 @@
 #ifndef HELPER_H
 #define HELPER_H
 
-
-
 #include <ArduinoJson.h>
 #include <cstdint>
 #include <Regexp.h>
@@ -10,9 +8,6 @@
 #include <WiFi.h>
 #include <QueueList.h>
 #include <AudioTools.h>
-
-
-
 
 extern JsonDocument docIniFile;
 
@@ -37,12 +32,14 @@ extern String S_TTS_LANG;
 extern String S_TTS_SPEED;
 extern String S_TTS_MAX_LEN_TTM;
 
-
-
+extern boolean B_WEBUI_ENABLE;
+extern boolean B_ACTION_KEYS_ENABLE;
+extern boolean B_FTP_SERVER_ENABLE;
+extern boolean B_LOW_POWER_MODE_ENABLE;
+extern boolean B_MQTT_CLIENT_ENABLE;
+extern boolean B_STOP2PRESS_ENABLE;
 
 extern void playError(const char *sText);
-
-
 
 // Overwrite globVar with AppIni values
 bool setGlobalVar(){
@@ -58,8 +55,6 @@ bool setGlobalVar(){
       playError("CONFIG FILE NOT EXIST");
       return(false);
     }
-
-    
 
     DeserializationError error = deserializeJson(docIniFile, file);
     if (error) {
@@ -111,6 +106,11 @@ bool setGlobalVar(){
         } else {
           Serial.print("section 'mqtt' has an not entry 'Port' with value ");
         }
+        if ( docIniFile["mqtt"]["enable"].is<boolean>()) {
+          B_MQTT_CLIENT_ENABLE = docIniFile["mqtt"]["enable"].as<boolean>();
+        } else {
+          Serial.print("section 'mqtt' has an not entry 'enable' with value ");
+        }
 
         if ( docIniFile["mqtt"]["user"]) {
           S_MQTT_USER = docIniFile["mqtt"]["user"].as<String>();
@@ -135,11 +135,15 @@ bool setGlobalVar(){
         } else {
           Serial.print("section 'ftp' has an not entry 'user' with value ");
         }
-
+        if ( docIniFile["ftp"]["enable"].is<boolean>()) {
+          B_FTP_SERVER_ENABLE = docIniFile["ftp"]["enable"].as<boolean>();
+        } else {
+          Serial.print("section 'ftp' has an not entry 'Enable' with value ");
+        }
         if ( docIniFile["ftp"]["password"]) {
           S_FTP_SVR_PASSWORD = docIniFile["ftp"]["password"].as<String>();
         } else {
-           Serial.print("section 'ftp' has an not entry 'password' with value ");
+          Serial.print("section 'ftp' has an not entry 'password' with value ");
           Serial.print("section 'ftp' has an entry 'password' with value ");
         }
 
@@ -166,6 +170,45 @@ bool setGlobalVar(){
         } else {
           Serial.print("section 'tts' has an not entry 'Max-len-TTM' with value ");
         }
+        if ( docIniFile["tts"]["max-len-ttm"]) {
+          S_TTS_MAX_LEN_TTM = docIniFile["tts"]["max-len-ttm"].as<String>();
+        } else {
+          Serial.print("section 'tts' has an not entry 'Max-len-TTM' with value ");
+        }
+        if ( docIniFile["WebUI"]["enable"].is<boolean>()) {
+          B_WEBUI_ENABLE = docIniFile["WebUI"]["enable"].as<boolean>();
+        } else {
+          Serial.print("section 'WebUI' has an not entry 'Enable' with value ");
+        }
+
+        
+        if ( docIniFile["ActionKeys"]["enable"].is<boolean>()) {
+          B_ACTION_KEYS_ENABLE = docIniFile["ActionKeys"]["enable"].as<boolean>();
+        } else {
+          Serial.print("section 'ActionKeys' has an not entry 'Enable' with value ");
+        }
+
+        if ( docIniFile["main"]["lowPowerMode"].is<boolean>()) {
+          B_LOW_POWER_MODE_ENABLE = docIniFile["main"]["lowPowerMode"].as<boolean>();
+        } else {
+          Serial.print("section 'main' has an not entry 'LowPowerMode' with value ");
+        }
+
+        if ( docIniFile["main"]["lowPowerMode"].is<boolean>()) {
+          B_LOW_POWER_MODE_ENABLE = docIniFile["main"]["lowPowerMode"].as<boolean>();
+        } else {
+          Serial.print("section 'main' has an not entry 'LowPowerMode' with value ");
+        }
+        if ( docIniFile["ActionKeys"]["Key4"]["stop2Press"].is<boolean>()) {
+          B_STOP2PRESS_ENABLE = docIniFile["ActionKeys"]["Key4"]["stop2Press"].as<boolean>();
+        } else {
+          Serial.print("section 'ActionKeys' has an not entry 'Key4.stop2Press' with value ");
+        }
+
+        
+      Serial.println(" ------  End set global params ------------");
+
+      // File must be closed after reading
       file.close();
       return(true);
   }
@@ -194,6 +237,8 @@ void getTtmFileName(String text,  char* buf) {
   Serial.print ("Converted string: ");
   Serial.println (buf);
 }
+
+
 
 
 #endif // HELPER_H

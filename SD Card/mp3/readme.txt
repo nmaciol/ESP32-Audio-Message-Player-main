@@ -1,0 +1,1 @@
+Currently, only audio files with a sample rate of 44.1 kHz are supported.
