@@ -26,6 +26,7 @@
 //  Fix SD card access issue in FTP server
 //  ----------------------------------------
 // !!!!! Overwrite value in  .pio\libdeps\esp32dev\SimpleFTPServer\FtpServerKey.h
+/// Line 63 #define DEFAULT_STORAGE_TYPE_ESP32 					STORAGE_SD  with
 /// Line 63 #define DEFAULT_STORAGE_TYPE_ESP32 					STORAGE_SD_MMC
 
 #undef DEFAULT_STORAGE_TYPE_ESP32
@@ -46,9 +47,10 @@
   0.3.2 Add Audio error mesages via TTS Comodore C64 voice for Config file not exist, json error, network connection error
   0.4.0 Add Simple Web Server functionality
   0.4.1 Add Web UI for Action Key 4 with selectable Sound/Audio Pools, and more MQTT commands to trigger Action Keys and select Sound/Audio Pools
+  0.5.0 Chore: update espressif32 platform to 7.0.0
 */
 
-#define FIRMWARE_VERSION "0.4.1"
+#define FIRMWARE_VERSION "0.5.0"
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;        // GMT offset in seconds / Europe/Berlin / CET (Europe)

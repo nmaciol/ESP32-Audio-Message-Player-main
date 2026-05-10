@@ -82,6 +82,48 @@ The player supports two power-saving modes:
 - The directory containing the cached MP3 files must not be too large, so please be careful. I have tested up to 1000 files.
 - **Radio** playback is highly sensitive to network quality, as the player has a very small data buffer. With a reliable internet provider and a stable home router, radio streaming can run smoothly for hours without interruptions.
 
+## Issue when compiling in VS Code
+
+#### ESP32 Compatibility Fix (AudioTools HTTP Issue)
+
+If you encounter a compilation error related to `setConnectionTimeout`, apply the following manual fix:
+
+##### 📂 Open the file:
+
+.pio/libdeps/esp32dev/audio-tools/src/AudioTools/Communication/HTTP/URLStream.h
+
+🔎 Find these lines:
+
+client\_secure->setConnectionTimeout(client\_timeout);
+client\_insecure->setConnectionTimeout(client\_timeout);
+
+✏️ Replace them with:
+
+client_secure->setTimeout(client_timeout);
+client_insecure->setTimeout(client_timeout);
+
+#### 🛠️ Fix SD Card Access Issue in FTP Server
+
+To fix SD card access problems in the FTP server, you need to modify the storage backend definition.
+
+##### 📂 File to edit:
+
+.pio/libdeps/esp32dev/SimpleFTPServer/FtpServerKey.h
+
+##### 🔎 Find this line (around line 63):
+
+```
+#define DEFAULT_STORAGE_TYPE_ESP32   STORAGE_SD
+```
+
+\_STORAGE\_TYPE\_ESP32   STORAGE\_SD
+
+✏️ Replace it with:
+
+```
+#define DEFAULT_STORAGE_TYPE_ESP32   STORAGE_SD_MMC
+```
+
 ## Unresolved issue
 
 * Use of ESPAsyncWebServer causes conflicts with AudioTools/Communication/AudioHttp.

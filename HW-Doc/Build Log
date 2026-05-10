@@ -1,38 +1,174 @@
 Processing esp32dev (platform: espressif32@6.12.0; board: esp32dev; framework: arduino)
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Verbose mode can be enabled via `-v, --verbose` option
+--------------------------  2026-05-10 ---------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
 CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32dev.html
-PLATFORM: Espressif 32 (6.12.0) > Espressif ESP32 Dev Module
+PLATFORM: Espressif 32 (7.0.0) > Espressif ESP32 Dev Module
 HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash
 DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
-PACKAGES:
- - framework-arduinoespressif32 @ 2.0.6+sha.72c41d0
- - tool-esptoolpy @ 2.40900.250804 (4.9.0)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.0 (4.11.0) 
+ - tool-mkfatfs @ 2.0.1 
+ - tool-mklittlefs @ 1.203.210628 (2.3) 
+ - tool-mkspiffs @ 2.230.0 (2.30) 
  - toolchain-xtensa-esp32 @ 8.4.0+2021r2-patch5
 LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
 LDF Modes: Finder ~ chain, Compatibility ~ soft
-Found 43 compatible libraries
+Found 45 compatible libraries
 Scanning dependencies...
 Dependency Graph
 |-- Wire @ 2.0.0
-|-- TinyFTPClient @ 1.2.2+sha.43500dd
-|-- audio-tools @ 1.2.1+sha.2257b5b
-|-- audio-driver @ 0.2.0+sha.c5aa260
-|-- libhelix @ 0.9.2+sha.0d70b7f
-|-- SdFat @ 2.3.1+sha.cda0573
+|-- audio-tools @ 1.2.3+sha.1d23616
+|-- audio-driver @ 0.2.1+sha.b5824ed
+|-- libhelix @ 0.9.2+sha.63af214
 |-- PubSubClient @ 2.8.0+sha.2d228f2
-|-- SimpleFTPServer @ 0.0.0+sha.e06e373
-|-- Arduino-QueueList @ 0.0.0+20251203184241.sha.8260b72
-|-- IniFile @ 1.3.0+sha.880edea
+|-- SimpleFTPServer @ 3.0.2+sha.641366f
+|-- Arduino-QueueList @ 0.0.0+20260510181645.sha.8260b72
 |-- Regexp @ 0.1.0+sha.ca018b1
-|-- SD @ 2.0.0
+|-- ESP32Time @ 2.0.6+sha.870a186
+|-- ESP32Ping @ 1.7.0+sha.357e5f5
+|-- ArduinoJson @ 7.4.2+sha.d4e745a
+|-- tts-SAM @ 0.0.1+sha.fc64e96
+|-- SD_MMC @ 2.0.0
 |-- WiFi @ 2.0.0
+|-- ESPmDNS @ 2.0.0
+|-- FS @ 2.0.0
+|-- RandomUtils
 Building in release mode
 Retrieving maximum program size .pio\build\esp32dev\firmware.elf
 Checking size .pio\build\esp32dev\firmware.elf
 Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
-RAM:   [==        ]  19.6% (used 64268 bytes from 327680 bytes)
-Flash: [=====     ]  45.9% (used 1445061 bytes from 3145728 bytes)
-=============================================================================================== [SUCCESS] Took 44.37 seconds ===============================================================================================
- *  Terminal will be reused by tasks, press any key to close it. 
+RAM:   [==        ]  21.0% (used 68816 bytes from 327680 bytes)
+Flash: [=====     ]  50.2% (used 1577709 bytes from 3145728 bytes)
+Configuring upload protocol...
+AVAILABLE: cmsis-dap, esp-bridge, esp-prog, espota, esptool, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa
+CURRENT: upload_protocol = esptool
+Looking for upload port...
+Using manually specified: COM4
+Uploading .pio\build\esp32dev\firmware.bin
+esptool.py v4.11.0
+Serial port COM4
+Connecting............
+Chip is ESP32-D0WD-V3 (revision v3.1)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: b0:cb:d8:96:a3:ec
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00005fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Flash will be erased from 0x0000e000 to 0x0000ffff...
+Flash will be erased from 0x00010000 to 0x00192fff...
+SHA digest in image updated
+Compressed 17536 bytes to 12202...
+Writing at 0x00001000... (100 %)
+Wrote 17536 bytes (12202 compressed) at 0x00001000 in 0.4 seconds (effective 316.1 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 137...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (137 compressed) at 0x00008000 in 0.0 seconds (effective 564.8 kbit/s)...
+Hash of data verified.
+Compressed 8192 bytes to 47...
+Writing at 0x0000e000... (100 %)
+Wrote 8192 bytes (47 compressed) at 0x0000e000 in 0.1 seconds (effective 947.8 kbit/s)...
+Hash of data verified.
+Compressed 1584432 bytes to 950310...
+Writing at 0x00010000... (1 %)
+Writing at 0x0001ae5c... (3 %)
+Writing at 0x00024d7f... (5 %)
+Writing at 0x0003160f... (6 %)
+Writing at 0x0003ca2f... (8 %)
+Writing at 0x00045ef1... (10 %)
+Writing at 0x000525ea... (11 %)
+Writing at 0x000673b8... (13 %)
+Writing at 0x0006cd21... (15 %)
+Writing at 0x00072d28... (16 %)
+Writing at 0x00079018... (18 %)
+Writing at 0x0007f614... (20 %)
+Writing at 0x00085a90... (22 %)
+Writing at 0x0008c5b4... (23 %)
+Writing at 0x00091874... (25 %)
+Writing at 0x00097181... (27 %)
+Writing at 0x0009cc5f... (28 %)
+Writing at 0x000a21a9... (30 %)
+Writing at 0x000a7e0f... (32 %)
+Writing at 0x000adba0... (33 %)
+Writing at 0x000b3a29... (35 %)
+Writing at 0x000b90c4... (37 %)
+Writing at 0x000bf144... (38 %)
+Writing at 0x000c44f8... (40 %)
+Writing at 0x000c96c2... (42 %)
+Writing at 0x000cea7f... (44 %)
+Writing at 0x000d3d9c... (45 %)
+Writing at 0x000d90f3... (47 %)
+Writing at 0x000de2eb... (49 %)
+Writing at 0x000e338c... (50 %)
+Writing at 0x000e8998... (52 %)
+Writing at 0x000ede38... (54 %)
+Writing at 0x000f3522... (55 %)
+Writing at 0x000f8819... (57 %)
+Writing at 0x000fd8e8... (59 %)
+Writing at 0x00103885... (61 %)
+Writing at 0x00109026... (62 %)
+Writing at 0x0010e5c5... (64 %)
+Writing at 0x00113a5a... (66 %)
+Writing at 0x00118be3... (67 %)
+Writing at 0x0011e09a... (69 %)
+Writing at 0x001233f7... (71 %)
+Writing at 0x00128a69... (72 %)
+Writing at 0x0012e2ae... (74 %)
+Writing at 0x001340f7... (76 %)
+Writing at 0x001399e7... (77 %)
+Writing at 0x0013fbaf... (79 %)
+Writing at 0x001478ad... (81 %)
+Writing at 0x0015029f... (83 %)
+Writing at 0x001583e6... (84 %)
+Writing at 0x0015deb1... (86 %)
+Writing at 0x00166d4b... (88 %)
+Writing at 0x0016d57f... (89 %)
+Writing at 0x00176391... (91 %)
+Writing at 0x0017ceef... (93 %)
+Writing at 0x0018233c... (94 %)
+Writing at 0x001879ff... (96 %)
+Writing at 0x0018cfa3... (98 %)
+Writing at 0x00192d13... (100 %)
+Wrote 1584432 bytes (950310 compressed) at 0x00010000 in 22.4 seconds (effective 565.8 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+
+Please build project in debug configuration to get more details about an exception.
+See https://docs.platformio.org/page/projectconf/build_configurations.html
 
 
+--- Terminal on COM4 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, esp32_exception_decoder, hexlify, log2file, nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+[     8][V][WiFiServer.h:42] WiFiServer(): WiFiServer::WiFiServer(port=80, ...)
+[    17][V][WiFiServer.h:42] WiFiServer(): WiFiServer::WiFiServer(port=21, ...)
+[    25][V][WiFiServer.h:42] WiFiServer(): WiFiServer::WiFiServer(port=50009, ...)
+[    62][D][esp32-hal-cpu.c:244] setCpuFrequencyMhz(): PLL: 480 / 2 = 240 Mhz, APB: 80000000 Hz
+[    91][V][esp32-hal-uart.c:330] uartBegin(): UART0 baud(115200) Mode(800001c) rxPin(3) txPin(1)
+[   101][V][esp32-hal-uart.c:416] uartBegin(): UART0 not installed. Starting installation
+[   112][V][esp32-hal-uart.c:467] uartBegin(): UART0 initialization done.
+[   128][I][esp32-hal-i2c.c:75] i2cInit(): Initialising I2C Master: sda=33 scl=32 freq=100000
+ ------  Start set global params ------------
+ ------  End set global params ------------
+[   270][D][WiFiGeneric.cpp:1040] _eventCallback(): Arduino Event: 0 - WIFI_READY
+[   354][V][WiFiGeneric.cpp:97] set_esp_interface_ip(): Configuring Station static IP: 0.0.0.0, MASK: 0.0.0.0, GW: 0.0.0.0
+[   352][V][WiFiGeneric.cpp:341] _arduino_event_cb(): STA Started
+[   371][D][WiFiGeneric.cpp:1040] _eventCallback(): Arduino Event: 2 - STA_START
+....[  2880][V][WiFiGeneric.cpp:356] _arduino_event_cb(): STA Connected: SSID: dsl-home, BSSID: 60:b5:8d:e2:3d:c0, Channel: 6, Auth: WPA2_PSK
+.[  2893][D][WiFiGeneric.cpp:1040] _eventCallback(): Arduino Event: 4 - STA_CONNECTED
+[  2938][V][WiFiGeneric.cpp:370] _arduino_event_cb(): STA Got New IP:192.168.1.35
+[  2946][D][WiFiGeneric.cpp:1040] _eventCallback(): Arduino Event: 7 - STA_GOT_IP
+[  2954][D][WiFiGeneric.cpp:1103] _eventCallback(): STA IP: 192.168.1.35, MASK: 255.255.255.0, GW: 192.168.1.1
+.+-------------------------------------------+
+ Host-Name  : gong-b
+ MQTT House : gong
