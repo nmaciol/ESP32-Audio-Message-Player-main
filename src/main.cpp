@@ -37,20 +37,21 @@
 
 
 /*
-  0.2.0 Add Live Stream  code optimization
-  0.2.3 Add  MQTT command to set sleep mode and deep sleep time, and publish sleep mode and WiFi RSSI in ping response
-  0.2.4 Add RTC time to ping response and mDNS
-  0.2.5 Add MQTT command to get last action 
-  0.2.6 Add MQTT connect watchdog and reboot after 20 MQTT connection failures
-  0.3.0 Replace SD Lib with SD_MMC, IniFile Lib with ArduinoJson, code optimization, bug fixes, and more MQTT commands
-  0.3.1 Remove credentials.h and add error handling for missing or wrong entries in app.json
-  0.3.2 Add Audio error mesages via TTS Comodore C64 voice for Config file not exist, json error, network connection error
-  0.4.0 Add Simple Web Server functionality
-  0.4.1 Add Web UI for Action Key 4 with selectable Sound/Audio Pools, and more MQTT commands to trigger Action Keys and select Sound/Audio Pools
-  0.5.0 Chore: update espressif32 platform to 7.0.0
+  2.0.0 Add Live Stream  code optimization
+  2.3.0 Add  MQTT command to set sleep mode and deep sleep time, and publish sleep mode and WiFi RSSI in ping response
+  2.4.0 Add RTC time to ping response and mDNS
+  2.5.0 Add MQTT command to get last action 
+  2.6.0 Add MQTT connect watchdog and reboot after 20 MQTT connection failures
+  3.0.0 Replace SD Lib with SD_MMC, IniFile Lib with ArduinoJson, code optimization, bug fixes, and more MQTT commands
+  3.1.0 Remove credentials.h and add error handling for missing or wrong entries in app.json
+  3.2.0 Add Audio error mesages via TTS Comodore C64 voice for Config file not exist, json error, network connection error
+  4.0.0 Add Simple Web Server functionality
+  4.1.0 Add Web UI for Action Key 4 with selectable Sound/Audio Pools, and more MQTT commands to trigger Action Keys and select Sound/Audio Pools
+  5.0.0 Chore: update espressif32 platform to 7.0.0
+  5.0.1 Add MQTT commands to enable/disable for Stop4Press, ActionKeys, WebUI, FTP und MQTT
 */
 
-#define FIRMWARE_VERSION "0.5.0"
+#define FIRMWARE_VERSION "5.0.1"
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;        // GMT offset in seconds / Europe/Berlin / CET (Europe)
@@ -130,7 +131,9 @@ String TempVolume = "";
 String LastAction = "";
 
 // Variable to store the start time of Action Key 4 for cooldown management
-time_t startActionKey4Time;
+time_t prevKey4PressTime;
+time_t key4PressTime ;
+
 
 // JSON document for app.ini file
 JsonDocument docIniFile;
@@ -141,6 +144,73 @@ String header;
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 // This can be used to prevent the server from hanging while waiting for a client request
 const long timeoutTime = 2000;
+
+
+
+// Helper function to stop playing sound and live streams, and to clear the URL and decoder buffers
+void stopPlaySound()
+{
+  // Serial.println("Stop Play Sound");
+  currentLiveStream = "";
+  decoder.end();
+  url.flush();
+  url.end();
+  url.clear();
+  copier.end();
+}
+
+void playKey4Sound()
+{
+
+  // If the interval since the last release time is exceeded,
+  // > play the next random sound from the sound pool.
+
+  // If the interval is not exceeded and Stop2Press is enabled,
+  // > stop the currently playing sound.
+
+    while (!queueOrder.isEmpty())
+    {
+      String a = queueOrder.pop();
+    }
+
+    
+    // Serial.println("Sound started--Key");
+    if (prevKey4PressTime == 0 || rtc.getEpoch() - prevKey4PressTime > docIniFile["ActionKeys"]["Key4"]["interval"].as<int>())
+    {
+      // After the cooldown period is over, play the next sound and reset the cooldown timer
+      stopPlaySound();
+      Serial.println("Button 4 pressed again after cooldown, stopping sound  ");
+      String soundPoolName = docIniFile["ActionKeys"]["Key4"]["soundPool"].as<String>();
+      JsonArray playlist = docIniFile["ActionKeys"]["Key4"]["soundPools"][soundPoolName].as<JsonArray>();
+      int playlistSize = playlist.size();
+      
+      // Zufallsgenerator mit analogRead auf einem freien Pin initialisieren
+      int randomIndex = randomRange(0, playlistSize - 1);
+
+      Serial.println("Naechster Sound: "  + String(randomIndex) + " / " + String(playlistSize));
+      const char* nextTrack = playlist[randomIndex].as<const char*>();
+
+      queueOrder.push(nextTrack);
+      mqttClient.publish((S_HOST_NAME + "/key4").c_str(), rtc.getTime().c_str(), 24);
+      Serial.println ("Play -- " + String(nextTrack));
+
+      prevKey4PressTime = rtc.getEpoch();
+
+    } else if (B_STOP2PRESS_ENABLE) {
+    
+        // After the cooldown period is not over, stop play  and reset the cooldown timer
+        prevKey4PressTime = 0; // Reset the cooldown timer to allow immediate replay on next press
+
+        Serial.println("Button 4 pressed again during cooldown, stopping sound...");
+        // If stop2Press is enabled, stop the current sound and reset the cooldown timer
+        stopPlaySound();
+
+    }
+    
+
+}
+
+
 
 void handleWebUI () {
     Serial.println("New Client.");                  // print a message out in the serial port
@@ -165,7 +235,7 @@ void handleWebUI () {
             // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
             // and a content-type so the client knows what's coming, then a blank line:
             // Display the HTML web page  i2s.incrementVolume(-0.05);
-            if (header.indexOf("GET /test") >= 0 || header.indexOf("GET /vol") >= 0  || header.indexOf("GET /sound") >= 0 ){
+            if (header.indexOf("GET /test") >= 0 || header.indexOf("GET /vol") >= 0  || header.indexOf("GET /sound") >= 0  || header.indexOf("GET /key") >= 0 ){
                 index += "OK";
                 //Serial.println("Start Test-Sound.");
                 // Serial.println("Sound started--Key");
@@ -218,6 +288,8 @@ void handleWebUI () {
                   File file = SD_MMC.open("/app.json", FILE_WRITE);
                   serializeJson(docIniFile, file);
                   file.close();
+                }   else if (header.indexOf("GET /key4") >= 0) {
+                  playKey4Sound();
                 }
             } else {
                 index += "<!DOCTYPE html><html>";
@@ -307,35 +379,42 @@ void handleWebUI () {
                       index += "<b>&#12340;&nbsp;Test-sounds</b>";
                       index += "</td>";
                     index += "<tr>";
-                    index += "<td><button onclick=\"start('/test1');\" >&#128276;</button></td>";
-                    index += "<td><button onclick=\"start('/test2');\" >&#128021;</button></td>";
-                    index += "<td><button onclick=\"start('/test3');\" >&#129311;</button></td>";
-                    index += "<td><button style=\"font-size: 16px;\" onclick=\"start('/test4');\" >&#128251;<br>/&#9209;</button></td>";
-                  index += "</tr>";
-                  index += "<tr>";
-                    index += "<td><p>Key4<br>SoundPool</p></td>";
-                    index += "<td colspan=\"2\"><select style=\"font-size: 22px;\" id=\"SoundPool\" >";
+                      index += "<td><button onclick=\"start('/test1');\" >&#128276;</button></td>";
+                      index += "<td><button onclick=\"start('/test2');\" >&#128021;</button></td>";
+                      index += "<td><button onclick=\"start('/test3');\" >&#129311;</button></td>";
+                      index += "<td><button style=\"font-size: 16px;\" onclick=\"start('/test4');\" >&#128251;<br>/&#9209;</button></td>";
+                    index += "</tr>";
+                    index += "<tr>";
+                      index += "<td><p>Key4<br>SoundPool</p></td>";
+                      index += "<td colspan=\"2\"><select style=\"font-size: 22px;\" id=\"SoundPool\" >";
 
-                    String soundPoolName = docIniFile["ActionKeys"]["Key4"]["soundPool"].as<String>();
-                    JsonObject soundPools = docIniFile["ActionKeys"]["Key4"]["soundPools"].as<JsonObject>();
+                      String soundPoolName = docIniFile["ActionKeys"]["Key4"]["soundPool"].as<String>();
+                      JsonObject soundPools = docIniFile["ActionKeys"]["Key4"]["soundPools"].as<JsonObject>();
 
-                    for (JsonPair kv : soundPools) {
-                        String key = kv.key().c_str();
-                        if( key == soundPoolName) {
-                          index += "  <option value=\"" + key + "\" selected>" + key + "</option>";
-                        } else {
-                          index += "  <option value=\"" + key + "\">" + key + "</option>";
+                      for (JsonPair kv : soundPools) {
+                          String key = kv.key().c_str();
+                          if( key == soundPoolName) {
+                            index += "  <option value=\"" + key + "\" selected>" + key + "</option>";
+                          } else {
+                            index += "  <option value=\"" + key + "\">" + key + "</option>";
+                          }
                         }
-                      }
 
-                      index += "</select></td>";
-                      index += "<td><button style=\"font-size: 14px; \" onclick=\"start('/soundPoolSave?' + document.getElementById('SoundPool').value + '&');\" >&#128190;</button></td>";
-                  index += "</tr>";
+                        index += "</select></td>";
+                        index += "<td><button style=\"font-size: 14px; \" onclick=\"start('/soundPoolSave?' + document.getElementById('SoundPool').value + '&');\" >&#128190;</button></td>";
+                    index += "</tr>";
+                    index += "<tr>";
+                      index += "<td><button onclick=\"start('/key4');\" >&#127188;</button></td>";
+                      index += "<td></button></td>";
+                      index += "<td></button></td>";
+                      index += "<td></button></td>";
+                    index += "</tr>";
                 index += "</table>";  
                 index += "</body></html>";
 
             }
             wifiClient.println(index);
+            
 
             // The HTTP response ends with another blank line
             wifiClient.println();
@@ -428,17 +507,7 @@ void TTM_Worker_Google(String sTts)
   }
 }
 
-// Helper function to stop playing sound and live streams, and to clear the URL and decoder buffers
-void stopPlaySound()
-{
-  // Serial.println("Stop Play Sound");
-  currentLiveStream = "";
-  decoder.end();
-  url.flush();
-  url.end();
-  url.clear();
-  copier.end();
-}
+
 //  Button 3
 void stopPlaySoundOn(bool, int, void *)
 {
@@ -450,54 +519,34 @@ void stopPlaySoundOn(bool, int, void *)
 // It also implements a cooldown mechanism to prevent multiple triggers within a short time frame.
 // When PIR on Key4 is triggered, play a random sound from the playlist defined in app.json and prevent multiple triggers within a short time frame defined by "interval" in app.json
 
+
+
 void playKey4SoundOn(bool, int, void *)
 {
-
-  if ( queueOrder.isEmpty())  // Is free to take new items
-  {
-    // Serial.println("Sound started--Key");
-    if (startActionKey4Time == 0 || rtc.getEpoch() - startActionKey4Time > docIniFile["ActionKeys"]["Key4"]["interval"].as<int>())
-    {
-      if(B_STOP2PRESS_ENABLE) {
-        stopPlaySound();
-      }
-
-      startActionKey4Time = rtc.getEpoch();
-
-      String soundPoolName = docIniFile["ActionKeys"]["Key4"]["soundPool"].as<String>();
-      JsonArray playlist = docIniFile["ActionKeys"]["Key4"]["soundPools"][soundPoolName].as<JsonArray>();
-      int playlistSize = playlist.size();
-      
-      // Zufallsgenerator mit analogRead auf einem freien Pin initialisieren
-      int randomIndex = randomRange(0, playlistSize - 1);
-
-      Serial.println("Naechster Sound: "  + String(randomIndex) + " / " + String(playlistSize));
-      const char* nextTrack = playlist[randomIndex].as<const char*>();
-
-      queueOrder.push(nextTrack);
-      mqttClient.publish((S_HOST_NAME + "/key4").c_str(), rtc.getTime().c_str(), 24);
-      Serial.println ("Play -- " + String(nextTrack));
-
-    } else if (B_STOP2PRESS_ENABLE) {
-        //Serial.println("Button 4 pressed again during cooldown, stopping sound...");
-        // If stop2Press is enabled, stop the current sound and reset the cooldown timer
-        stopPlaySound();
-        startActionKey4Time = 0;
-    }
-  }  else {
-      Serial.println("Button 4 pressed but queue is not empty, skipping...");
-      if(B_STOP2PRESS_ENABLE) {
-        // If stop2Press is enabled, clear the queue to stop the current sound by second press, and reset the cooldown timer
-        while (!queueOrder.isEmpty())
-        {
-          String a = queueOrder.pop();
-        }
-      }
-  }
+  
+    // Use the RTC epoch time to manage cooldown for Action Key 4
+    key4PressTime = rtc.getEpoch();
+    return;
 }
+
+
 void playKey4SoundOff(bool, int, void *)
 {
     // Serial.println("Sound stopped--Key");
+    if ( rtc.getEpoch() - key4PressTime > 10) { // 
+      if ( B_WEBUI_ENABLE){
+        B_WEBUI_ENABLE = false;
+        Serial.println("WebUI disabled by Key4");
+        queueOrder.push("ttmen!Web UI deaktiviert");
+      } else {
+        B_WEBUI_ENABLE = true;  
+        queueOrder.push("ttmen!Web UI aktiviert");
+        Serial.println("WebUI enabled by Key4");
+      }
+    } else {
+      playKey4Sound();
+    }
+    return;
 }
 
 // Button 5
@@ -522,6 +571,13 @@ void mqttCallback(char *topic, byte *message, unsigned int length)
   }
   Serial.println();
   Serial.println(topic);
+
+  int  pos = String(topic).lastIndexOf('/');
+  String topicSuffix = String(topic).substring(pos + 1);
+  String topicPrefix = String(topic).substring(0, pos);
+
+  Serial.println("Topic Prefix: " + topicPrefix);
+  Serial.println("Topic Suffix: " + topicSuffix);
   // Execute MQTT-command
   if (String(topic) == S_HOST_NAME + "/mp3" or String(topic) == S_MQTT_HOUSE + "/mp3")
   {
@@ -692,6 +748,27 @@ void mqttCallback(char *topic, byte *message, unsigned int length)
   {
     mqttClient.publish(("esp32/LastAction/" + String(S_HOST_NAME)).c_str(), LastAction.c_str());
   } 
+  else if (topicPrefix == S_HOST_NAME + "/enable")  
+  {
+
+    if (topicSuffix == "webui" ) {
+      B_WEBUI_ENABLE = (messageTemp == "on");
+      Serial.println("Web UI Enable set to " + String(B_WEBUI_ENABLE));
+    } else if (topicSuffix == "ftp") {
+      B_FTP_SERVER_ENABLE = (messageTemp == "on");
+      Serial.println("FTP Server Enable set to " + String(B_FTP_SERVER_ENABLE));
+    } else if (topicSuffix == "mqtt") {
+      B_MQTT_CLIENT_ENABLE = (messageTemp == "on");
+      Serial.println("MQTT Client Enable set to " + String(B_MQTT_CLIENT_ENABLE));
+    } else if (topicSuffix == "akey") {
+      B_ACTION_KEYS_ENABLE = (messageTemp == "on");
+      Serial.println("Action Keys Enable set to " + String(B_ACTION_KEYS_ENABLE));
+    } else if (topicSuffix == "stop2press") {
+      B_STOP2PRESS_ENABLE = (messageTemp == "on");
+      Serial.println("Stop 2 Press Enable set to " + String(B_STOP2PRESS_ENABLE));
+    }
+  }
+
   //Serial.println(String(topic) + " - " + messageTemp);
 } 
 
@@ -727,6 +804,11 @@ void mqttReconnect()
       mqttClient.subscribe((S_HOST_NAME + "/lpm").c_str());  // Low Power Mode
       mqttClient.subscribe((S_HOST_NAME + "/sleep").c_str());  // Deep sleep
       mqttClient.subscribe((S_HOST_NAME + "/getLastAct").c_str());  // 
+      mqttClient.subscribe((S_HOST_NAME + "/enable/webui").c_str());  // 
+      mqttClient.subscribe((S_HOST_NAME + "/enable/ftp").c_str());  // 
+      mqttClient.subscribe((S_HOST_NAME + "/enable/mqtt").c_str());  // 
+      mqttClient.subscribe((S_HOST_NAME + "/enable/akey").c_str());  // 
+      mqttClient.subscribe((S_HOST_NAME + "/enable/stop2press").c_str());  // 
 
       // House
       mqttClient.subscribe((S_MQTT_HOUSE + "/tts").c_str());
@@ -795,7 +877,7 @@ void setup()
   i2s.setVolume(S_AUDIO_VOLUME.toFloat());
 
   // Blocking Key4 call to prevent multiple triggers within a short time frame when the device is started and the button is pressed.
-  startActionKey4Time = rtc.getEpoch();
+  prevKey4PressTime = rtc.getEpoch();
 
   // setup additional buttons
   action.add(i2s.getKey(3), stopPlaySoundOn);

@@ -2,6 +2,12 @@
 
 All notable changes to the AMPlayer project will be documented in this file.
 
+## [5.0.1] - 2026-05-12
+
+* Add MQTT commands to enable/disable for Stop4Press, ActionKeys, WebUI, FTP server und MQTT client. The changed states are not saved to app.ini.
+* Add a button to the WebUI to simulate pressing KEY4
+* Add Key4 long-press  (10s+) action to toggle Web UI on/off
+
 ## [5.0.0] - 2026-05-10
 
 ### Changed
