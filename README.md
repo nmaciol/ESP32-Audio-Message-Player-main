@@ -31,8 +31,8 @@ The aim of this project is to develop an MP3 , TTS and Live Stream player that c
 # SW Installation & Customizing
 
 - Modify app.json on the SD card
-- Upload the project to VS Code
-- Build firmware with PlatformIO and upload it to ESP32-A1S
+- Upload the project to VS Code and Build firmware with PlatformIO and upload it to ESP32-A1S
+- Or from  [https://nmaciol.github.io/ESP32-Audio-Message-Player-firmware/]()
 
 # HW Installation
 
@@ -78,7 +78,7 @@ The player supports two power-saving modes:
 - The message queue was successfully tested using up to 10 KB of FreeHeep. There were about 60 messages.
 - If the Internet connection is interrupted during a call to TTS services, the ESP crashes and restarts.
 - The directory containing the cached MP3 files must not be too large, so please be careful. I have tested up to 1000 files.
-- **Radio** playback is highly sensitive to network quality, as the player has a very small data buffer. With a reliable internet provider and a stable home router, radio streaming can run smoothly for hours without interruptions.
+- **Radio** playback is highly sensitive to **network quality**, as the player has a very small data buffer. With a reliable internet provider and a stable home router, radio streaming can run smoothly for hours without interruptions.
 
 ## Issue when compiling in VS Code
 
@@ -100,7 +100,8 @@ client\_insecure->setConnectionTimeout(client\_timeout);
 client_secure->setTimeout(client_timeout);
 client_insecure->setTimeout(client_timeout);
 
-#### 🛠️ Fix SD Card Access Issue in FTP Server
+
+### 🛠️ Fix SD Card Access Issue in FTP Server
 
 To fix SD card access problems in the FTP server, you need to modify the storage backend definition.
 
@@ -132,7 +133,9 @@ The AMPlayer can only play MP3 files with a sampling rate of 44,100 Hz (44.1 kHz
 
 ## Editing `app.json`
 
-The `app.json` file is best edited using WinSCP: simply download the file, make your changes locally, and upload it again afterward.
+he `app.json` file is best edited using [WinSCP](https://winscp.net?utm_source=chatgpt.com) and [Notepad++](https://notepad-plus-plus.org?utm_source=chatgpt.com): simply download the file, make your changes locally in Notepad++, and upload it again afterward.
+
+
 Please note that the player's FTP server supports only a single connection at a time. Attempting to open a second connection may result in errors.
 
 Before uploading, it is recommended to always validate the format of the `app.json` file using the “JSON Tools” plugin for Notepad++.
@@ -161,13 +164,15 @@ The following error conditions are supported:
 - **Error 3 – Network connecting error**
   - The system failed to connect to the Wi-Fi network.
 
-## Web  UI -- URL for access within the local network: http://[host-name]/
+## Web  UI 
 
 The WebUI is primarily designed to control the Audio Messenger and can also be used for testing and diagnostics.
 
-* Press and hold the Key4 switch for 10+ seconds to turn the WebUI on or off.Teen second long press Key4 switch WebUI on/off
+* Press and hold the Key4 switch for more than 10 seconds to turn the WebUI on or off
+* URL for access within the local network: **http://[host-name]/**
 
-![1777297215554](images/README/1777297215554.png)
+
+* ![1777297215554](images/README/1777297215554.png)
 
 ## MQTT Topics from the  Smart Home to MP3/TTS/LS Player
 
