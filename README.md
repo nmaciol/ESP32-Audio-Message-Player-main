@@ -100,7 +100,6 @@ client\_insecure->setConnectionTimeout(client\_timeout);
 client_secure->setTimeout(client_timeout);
 client_insecure->setTimeout(client_timeout);
 
-
 ### 🛠️ Fix SD Card Access Issue in FTP Server
 
 To fix SD card access problems in the FTP server, you need to modify the storage backend definition.
@@ -135,7 +134,6 @@ The AMPlayer can only play MP3 files with a sampling rate of 44,100 Hz (44.1 kHz
 
 he `app.json` file is best edited using [WinSCP](https://winscp.net?utm_source=chatgpt.com) and [Notepad++](https://notepad-plus-plus.org?utm_source=chatgpt.com): simply download the file, make your changes locally in Notepad++, and upload it again afterward.
 
-
 Please note that the player's FTP server supports only a single connection at a time. Attempting to open a second connection may result in errors.
 
 Before uploading, it is recommended to always validate the format of the `app.json` file using the “JSON Tools” plugin for Notepad++.
@@ -164,14 +162,12 @@ The following error conditions are supported:
 - **Error 3 – Network connecting error**
   - The system failed to connect to the Wi-Fi network.
 
-## Web  UI 
+## Web  UI
 
 The WebUI is primarily designed to control the Audio Messenger and can also be used for testing and diagnostics.
 
 * Press and hold the Key4 switch for more than 10 seconds to turn the WebUI on or off
 * URL for access within the local network: **http://[host-name]/**
-
-
 * ![1777297215554](images/README/1777297215554.png)
 
 ## MQTT Topics from the  Smart Home to MP3/TTS/LS Player
@@ -195,6 +191,7 @@ The WebUI is primarily designed to control the Audio Messenger and can also be u
 | [host-name]/enable/ftp        | gong/enable/ftp        | on or off                             | Enable or disable the FTP server                                           |
 | [host-name]/enable/mqtt       | gong/enable/mqtt       | on or off                             | Enable or disable the MQTT server                                          |
 | [host-name]/enable/stop2press | gong/enable/stop2press | on or off                             | Enable or disable the Stop2Press server                                    |
+| [host-name]/press/key4        | gong/pressKey4         |                                       | Start play sound/audio from pool                                    |
 |                               |                        |                                        |                                                                            |
 | [mqtt-house]/mp3              | gong/mp3               | /mp3/gong-a.mp3                        | Play all players from the group [mqtt-house]                               |
 | [mqtt-house]/tts              | gong/tts               | Hallo                                  |                                                                            |
@@ -250,11 +247,12 @@ Each entry in the referenced array represents an action command. Each command be
 
 * **tts / ttm**: The command is treated as text-to-speech input, followed by the text to be spoken.
 * mp3: The command refers to an audio file, including its file name and path on the SD card.
+* ls! : The command plays a live stream (radio station)
 
 When triggered, the system processes each entry in the selected `soundPool` and executes the corresponding actions according to their prefixes.
 
 * **tts / ttm**: followed by the text to be spoken
-* mü3: followed by the file name and path on the SD card
+* mp3: followed by the file name and path on the SD card
 
 When the Key4 key is pressed and If the interval since the last release time is exceeded, the system randomly selects an element from the selected audio pool (soundPool) and performs the appropriate actions based on its prefix.
 

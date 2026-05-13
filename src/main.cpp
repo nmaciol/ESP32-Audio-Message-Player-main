@@ -48,7 +48,7 @@
   4.0.0 Add Simple Web Server functionality
   4.1.0 Add Web UI for Action Key 4 with selectable Sound/Audio Pools, and more MQTT commands to trigger Action Keys and select Sound/Audio Pools
   5.0.0 Chore: update espressif32 platform to 7.0.0
-  5.0.1 Add MQTT commands to enable/disable for Stop4Press, ActionKeys, WebUI, FTP und MQTT
+  5.0.1 Add MQTT commands to enable/disable for Stop4Press, ActionKeys, WebUI, FTP und MQTT and extend sound pool for play Live Streams
 */
 
 #define FIRMWARE_VERSION "5.0.1"
@@ -133,6 +133,7 @@ String LastAction = "";
 // Variable to store the start time of Action Key 4 for cooldown management
 time_t prevKey4PressTime;
 time_t key4PressTime ;
+int lastKey4randIndex = 0;
 
 
 // JSON document for app.ini file
@@ -151,12 +152,18 @@ const long timeoutTime = 2000;
 void stopPlaySound()
 {
   // Serial.println("Stop Play Sound");
-  currentLiveStream = "";
-  decoder.end();
-  url.flush();
-  url.end();
-  url.clear();
-  copier.end();
+    Serial.println("MQTT Stopping playing");
+    currentLiveStream = "";
+    i2s.setMute(true);
+    decoder.end();
+    url.flush();
+    url.end();
+    url.clear();
+    // i2s.end();
+    copier.end();
+    delay(100);
+    i2s.setMute(false);
+
 }
 
 void playKey4Sound()
@@ -185,12 +192,21 @@ void playKey4Sound()
       int playlistSize = playlist.size();
       
       // Zufallsgenerator mit analogRead auf einem freien Pin initialisieren
-      int randomIndex = randomRange(0, playlistSize - 1);
+      int randomIndex = 0;
+      do{
+        randomIndex = randomRange(0, playlistSize - 1);
+      } while (playlistSize > 1 && randomIndex == lastKey4randIndex); // Sicherstellen, dass bei mehreren Tracks nicht derselbe direkt hintereinander gespielt wird
+      
+      lastKey4randIndex= randomIndex;
 
       Serial.println("Naechster Sound: "  + String(randomIndex) + " / " + String(playlistSize));
       const char* nextTrack = playlist[randomIndex].as<const char*>();
 
-      queueOrder.push(nextTrack);
+      if (String(nextTrack).substring(0, 3) == "ls!" ) {
+        currentLiveStream = String(nextTrack).substring(3);
+      } else {
+        queueOrder.push(nextTrack);
+      }
       mqttClient.publish((S_HOST_NAME + "/key4").c_str(), rtc.getTime().c_str(), 24);
       Serial.println ("Play -- " + String(nextTrack));
 
@@ -617,17 +633,7 @@ void mqttCallback(char *topic, byte *message, unsigned int length)
   }
   else if (String(topic) == S_HOST_NAME + "/stop" or String(topic) == S_MQTT_HOUSE + "/stop")
   {
-    Serial.println("MQTT Stopping playing");
-    currentLiveStream = "";
-    i2s.setMute(true);
-    decoder.end();
-    url.flush();
-    url.end();
-    url.clear();
-    // i2s.end();
-    copier.end();
-    delay(100);
-    i2s.setMute(false);
+    stopPlaySound();
     //queueOrder.push("mp3" + S_START_SOUND);
   }
   else if (String(topic) == S_HOST_NAME + "/tts" or String(topic) == S_MQTT_HOUSE + "/tts")
@@ -767,6 +773,8 @@ void mqttCallback(char *topic, byte *message, unsigned int length)
       B_STOP2PRESS_ENABLE = (messageTemp == "on");
       Serial.println("Stop 2 Press Enable set to " + String(B_STOP2PRESS_ENABLE));
     }
+  } else if (String(topic) == S_HOST_NAME + "/press/key4") {
+      playKey4Sound();
   }
 
   //Serial.println(String(topic) + " - " + messageTemp);
@@ -809,6 +817,7 @@ void mqttReconnect()
       mqttClient.subscribe((S_HOST_NAME + "/enable/mqtt").c_str());  // 
       mqttClient.subscribe((S_HOST_NAME + "/enable/akey").c_str());  // 
       mqttClient.subscribe((S_HOST_NAME + "/enable/stop2press").c_str());  // 
+      mqttClient.subscribe((S_HOST_NAME + "/press/key4").c_str());  // 
 
       // House
       mqttClient.subscribe((S_MQTT_HOUSE + "/tts").c_str());
@@ -1157,4 +1166,4 @@ void loop()
         }
       }
   }
-}
+}     

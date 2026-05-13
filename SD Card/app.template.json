@@ -78,9 +78,12 @@
                     "ttmen!Happy birthday",
                     "ttm50!Alles Gute zum Geburtstag",
                     "ttmpl!Wszystkiego najlepszego z okazji urodzin"
+                ],
+                "Radio": [
+                    "ls!http://frontend.streamonkey.net/energy-stuttgart/stream/mp3"
                 ]
 			},
-            "_comment1": "Possible commands:: mp3/Doorbell.mp3 ; mp380!/Doorbell.mp3; ttsI'm a doog",
+            "_comment1": "Possible commands:: mp3/Doorbell.mp3 ; mp380!/Doorbell.mp3; ttsI'm a doog; ls!http://frontend.streamonkey.net/energy-stuttgart/stream/mp3",
             "_comment5": "Audio source: https://www.ohrka.de/ueber-ohrka/100-neue-ohrka-maerchen and https://pixabay.com/"
 		}
     }

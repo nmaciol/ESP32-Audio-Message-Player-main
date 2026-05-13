@@ -1,0 +1,11 @@
+
+
+ESP32 External Wake Up from Deep Sleep
+-------------------------------------
+https://randomnerdtutorials.com/esp32-external-wake-up-deep-sleep/
+
+
+https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/DeepSleep/ExternalWakeUp/ExternalWakeUp.ino
+
+
+
