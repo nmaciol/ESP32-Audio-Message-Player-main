@@ -2,6 +2,10 @@
 
 All notable changes to the AMPlayer project will be documented in this file.
 
+## [5.1.0] - 2026-05-15
+
+* Chore: Migrate to a faster FTP server library
+
 ## [5.0.1] - 2026-05-13
 
 * Add MQTT commands to enable/disable for Stop4Press, ActionKeys, WebUI, FTP server und MQTT client and press/key4. The changed states are not saved to app.ini.

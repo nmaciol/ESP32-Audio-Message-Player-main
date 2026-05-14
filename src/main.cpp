@@ -15,7 +15,7 @@
 #include <AudioTools/AudioLibs/AudioBoardStream.h>
 #include <AudioTools/AudioCodecs/CodecMP3Helix.h>
 #include <AudioTools/Communication/AudioHttp.h>
-#include <SimpleFTPServer.h>
+#include <MultiFTPServer.h>
 #include <esp_sleep.h>
 #include <ESPmDNS.h>
 #include <ESP32Time.h>
@@ -25,7 +25,7 @@
 
 //  Fix SD card access issue in FTP server
 //  ----------------------------------------
-// !!!!! Overwrite value in  .pio\libdeps\esp32dev\SimpleFTPServer\FtpServerKey.h
+// !!!!! Overwrite value in  .pio\libdeps\esp32dev\MultiFTPServer\FtpServerKey.h
 /// Line 63 #define DEFAULT_STORAGE_TYPE_ESP32 					STORAGE_SD  with
 /// Line 63 #define DEFAULT_STORAGE_TYPE_ESP32 					STORAGE_SD_MMC
 
@@ -49,9 +49,10 @@
   4.1.0 Add Web UI for Action Key 4 with selectable Sound/Audio Pools, and more MQTT commands to trigger Action Keys and select Sound/Audio Pools
   5.0.0 Chore: update espressif32 platform to 7.0.0
   5.0.1 Add MQTT commands to enable/disable for Stop4Press, ActionKeys, WebUI, FTP und MQTT and extend sound pool for play Live Streams
+  5.1.0 Chore: Migrate to a faster FTP server library
 */
 
-#define FIRMWARE_VERSION "5.0.1"
+#define FIRMWARE_VERSION "5.1.0"
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;        // GMT offset in seconds / Europe/Berlin / CET (Europe)
@@ -981,6 +982,14 @@ void setup()
 
 void loop()
 { 
+
+
+  // Handle FTP server operations
+  if(B_FTP_SERVER_ENABLE){
+        ftpServer.handleFTP(); // Continuously process FTP requests
+  }
+
+
   // Web UI Handler - check if clients are available and handle requests
   if(B_WEBUI_ENABLE)  {
     wifiClient = server.available();
@@ -1007,10 +1016,6 @@ void loop()
         action.processActions();
       }
 
-      // Handle FTP server operations
-      if(B_FTP_SERVER_ENABLE){
-           ftpServer.handleFTP(); // Continuously process FTP requests
-      }
 
       // Stop Live Strem
       if (!queueOrder.isEmpty() and currentLiveStream.length() > 0 and !bLiveStreamPause)

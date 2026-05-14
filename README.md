@@ -106,7 +106,7 @@ To fix SD card access problems in the FTP server, you need to modify the storage
 
 ##### 📂 File to edit:
 
-.pio/libdeps/esp32dev/SimpleFTPServer/FtpServerKey.h
+.pio/libdeps/esp32dev/MultiFTPServer/FtpServerKey.h
 
 ##### 🔎 Find this line (around line 63):
 
@@ -172,6 +172,7 @@ The WebUI is primarily designed to control the Audio Messenger and can also be u
 
 ## MQTT Topics from the  Smart Home to MP3/TTS/LS Player
 
+
 | Topic: Publish SmartHome      | Topic example          | value                                  | Description                                                                |
 | :---------------------------- | ---------------------- | -------------------------------------- | -------------------------------------------------------------------------- |
 | [host-name]/mp3               | gong-q/mp3             | /mp3/gong-a.mp3                        | Only [host-name] player are playing                                        |
@@ -191,7 +192,7 @@ The WebUI is primarily designed to control the Audio Messenger and can also be u
 | [host-name]/enable/ftp        | gong/enable/ftp        | on or off                             | Enable or disable the FTP server                                           |
 | [host-name]/enable/mqtt       | gong/enable/mqtt       | on or off                             | Enable or disable the MQTT server                                          |
 | [host-name]/enable/stop2press | gong/enable/stop2press | on or off                             | Enable or disable the Stop2Press server                                    |
-| [host-name]/press/key4        | gong/pressKey4         |                                       | Start play sound/audio from pool                                    |
+| [host-name]/press/key4        | gong/pressKey4         |                                        | Start play sound/audio from pool                                           |
 |                               |                        |                                        |                                                                            |
 | [mqtt-house]/mp3              | gong/mp3               | /mp3/gong-a.mp3                        | Play all players from the group [mqtt-house]                               |
 | [mqtt-house]/tts              | gong/tts               | Hallo                                  |                                                                            |
@@ -212,14 +213,16 @@ The WebUI is primarily designed to control the Audio Messenger and can also be u
 
 ## MQTT Topics from the Player for Smart Home:
 
+
 | Topic  Smart Home      | Value | Topic: Publish Player                                                                                                                                                                                                                                   | Value       | Description                       |
 | :--------------------- | :---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | --------------------------------- |
 | [host-name]/ping       |       | [host-name]/FreeHeap<br />[host-name]/version <br />[host-name]/currVol <br />[host-name]/IP <br />[host-name]/SSID<br />[host-name]/LastAction <br />[host-name]/LastAction <br />[host-name]/sleepMode <br />[host-name]/rssi <br />[host-name]/time |             | To get Version, FreeHeap etc     |
 |                        | .     | esp32/error                                                                                                                                                                                                                                             | [host-name] | In case of an internal error      |
 |                        | .     | [mqtt-house]/IP                                                                                                                                                                                                                                         |             | If setup has run successfully     |
-| [host-name]/getLastAct | .     | `esp32/LastAction/[HOST_NAME]/LastAction`                                                                                                                                                                                                             | LastAction  | Reports the last action performed |
+| [host-name]/getLastAct | .     | `esp32/LastAction/[HOST_NAME]/LastAction`                                                                                                                                                                                                               | LastAction  | Reports the last action performed |
 
 ## Buttons:
+
 
 | Button | Description                       | GPIO |
 | :----- | --------------------------------- | ---- |
